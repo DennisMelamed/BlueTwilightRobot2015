@@ -17,20 +17,22 @@ public class BTAutoContinuous implements BTIAutonomousRoutine
 	double br = 0.0;
 	double degree = 0.0;
 	
-	double s1 = 1300; 			//turn 90 degrees to align secondary with landfill & barrels
-	double s2 = s1 + 500; 		//ram forward into landfill
-	double s3 = s2 + 300; 		//move robot left to 1st barrel
-	double s4 = s3 + 1500;		//lift barrel
-	double s5 = s4 + 250;		//rotate robot left wheels forward
-	double s6 = s5 + 750;		//lower secondary
-	double s7 = s6 + 250;		//rotate robot left wheels backward
-	double s8 = s7 + 250;		//moving robot right to next barrel
-	double s9 = s8 + 150;		//moving and raising secondary
-	double s10 = s9 + 200;		//move robot backward into landfill
-	double s11 = s10 + 1500; 	//raise secondary
-	double s12 = s11 + 200;		//move robot forward
-	double s13 = s12 + 1300;	//rotate 90 counterclockwise
-	double s14 = s13 + 1500;	//driving robot right to auto zone 
+	double s1 = 1400; 			//turn 90 degrees to align secondary with landfill & barrels
+	double s2 = s1 + 600; 		//ram forward into landfill
+	double s3 = s2 + 500; 		//move robot right to 2nd barrel
+	double s3_5 = s3 + 100;		//move right side even further into totes
+	double s3_75 = s3_5 + 150;	//move left side into totes
+	double s4 = s3_75 + 3000;		//lift barrel
+	double s5 = s4 + 3000;		//stafe forward
+	double s6 = s5 + 350;		//move right
+//	double s7 = s6 + 250;		//rotate robot left wheels backward
+//	double s8 = s7 + 250;		//moving robot right to next barrel
+//	double s9 = s8 + 150;		//moving and raising secondary
+//	double s10 = s9 + 200;		//move robot backward into landfill
+//	double s11 = s10 + 1500; 	//raise secondary
+//	double s12 = s11 + 200;		//move robot forward
+//	double s13 = s12 + 1300;	//rotate 90 counterclockwise
+//	double s14 = s13 + 1500;	//driving robot right to auto zone 
 	
 	int barrelCount = 0;
 	
@@ -55,7 +57,8 @@ public class BTAutoContinuous implements BTIAutonomousRoutine
 	@Override
 	public void runAutonomous()
 	{
-		barrelSteal2();
+		moveAutoZone();
+//		moveIntoAutoZone();
 	}
 	
 	public void runAutonomousCoop()
@@ -103,6 +106,24 @@ public class BTAutoContinuous implements BTIAutonomousRoutine
 		}
 	}
 	
+	public void moveAutoZone()
+	{
+		if (startTime == 0)
+		{
+			startTime = System.currentTimeMillis();
+		}
+			
+		elapsedTime = System.currentTimeMillis() - startTime;
+		
+		if (elapsedTime > 0 && elapsedTime <= 400)
+		{
+			moveLeft();
+		}
+		else
+		{
+			stopMotors();
+		}
+	}
 	public void barrelSteal()
 	{
 		if (barrelCount >= 4)	//We don't expect this to happen given the short time for autonomous
@@ -292,17 +313,34 @@ public class BTAutoContinuous implements BTIAutonomousRoutine
 		}
 		else if (elapsedTime > s2 && elapsedTime <= s3)
 		{
-			slowMoveLeft();
+			slowMoveRight();
 		}
-		else if ((elapsedTime > s3 && elapsedTime <= s4) && !isSecondaryUpper)
+		else if (elapsedTime > s3 && elapsedTime <= 3_5)
 		{
-			isSecondaryUpper = storage.robot.getSecondaryUpperLimit().getValue();
+			rotateOnlyRightWheels(true);
+		}
+		else if (elapsedTime > s3_5 && elapsedTime <= 3_75)
+		{
+			rotateOnlyLeftWheels(true);
+		}	
+		else if ((elapsedTime > s3_75 && elapsedTime <= s4) && !isSecondaryUpper)
+		{
 			stopMotors();
+			isSecondaryUpper = storage.robot.getSecondaryUpperLimit().getValue();
 			if (isSecondaryUpper)
 			{
 				manipulator.stopBarrelMotors();	
 			}
 			barrelMotorsAuto(false);
+		}
+		else if ((elapsedTime > s4 && elapsedTime <= s5))
+		{
+			manipulator.stopBarrelMotors();
+			moveForward();
+		}
+		else if ((elapsedTime > s5 && elapsedTime <= s6))
+		{
+			moveRight();
 		}
 		else
 		{
@@ -365,6 +403,26 @@ public class BTAutoContinuous implements BTIAutonomousRoutine
 //			manipulator.stopBarrelMotors();
 //		}
 		
+	}
+	
+	public void moveIntoAutoZone()
+	{
+		if (startTime == 0)
+		{
+			startTime = System.currentTimeMillis();
+		}
+			
+		elapsedTime = System.currentTimeMillis() - startTime;
+		
+		if (elapsedTime > 0 && elapsedTime <= 500)
+		{
+			moveRight();
+		}
+		else 
+		{
+			stopMotors();
+			manipulator.stopBarrelMotors();
+		}
 	}
 
 	public void invertMotors()

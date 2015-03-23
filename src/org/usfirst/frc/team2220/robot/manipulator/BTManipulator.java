@@ -77,25 +77,25 @@ public class BTManipulator implements BTIManipulator
 			moveLeftForkMotors(0);
 		}
 		
-		if(toteCollectUp > 0)
-		{
-			if ((isToteMiddle && (!isLeftToteUpper && !isRightToteUpper)) && !isToteIn)
-			{
-				keepExtended = true; 
-				storage.robot.getToteClamp().retract();
-			}
-			
-			else if (keepExtended && isLeftToteUpper && isRightToteUpper)
-			{
-				keepExtended = false;
-				storage.robot.getToteClamp().extend();
-			}
-			
-			else if (!keepExtended)
-			{
-				storage.robot.getToteClamp().extend();
-			}
-		}
+//		if(toteCollectUp > 0)
+//		{
+//			if ((isToteMiddle && (!isLeftToteUpper && !isRightToteUpper)) && !isToteIn)
+//			{
+//				keepExtended = true; 
+//				storage.robot.getToteClamp().retract();
+//			}
+//			
+//			else if (keepExtended && isLeftToteUpper && isRightToteUpper)
+//			{
+//				keepExtended = false;
+//				storage.robot.getToteClamp().extend();
+//			}
+//			
+//			else if (!keepExtended)
+//			{
+//				storage.robot.getToteClamp().extend();
+//			}
+//		}
 		
 		if (isBarrelRelease)
 		{

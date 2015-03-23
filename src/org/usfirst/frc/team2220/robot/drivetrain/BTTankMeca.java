@@ -24,7 +24,7 @@ public BTStorage storage;
 	double back_left_motor   = 0;
 	double back_right_motor  = 0;
 	
-	int counter = 0;
+//	int counter = 0;
 	
 	@Override
 	public void drive() 
@@ -36,12 +36,12 @@ public BTStorage storage;
 		right_joystick_front_back = storage.controller.getRightJoystickFrontBack().getValue();
 		right_joystick_left_right = storage.controller.getRightJoystickLeftRight().getValue();
 		
-		if (counter >= 250)
-		{
-			SmartDashboard.putNumber("Left joystick", left_joystick_front_back);
-			counter = 0;
-		}
-		
+//		if (counter >= 250)
+//		{
+//			SmartDashboard.putNumber("Left joystick", left_joystick_front_back);
+//			counter = 0;
+//		}
+//		
 		if (Math.abs(left_joystick_front_back) > BTConstants.DEADZONE_MAX_RANGE)
 		{
 			front_left_motor = -BTConstants.MECANUM_SCALE_VALUE * left_joystick_front_back;
@@ -84,7 +84,7 @@ public BTStorage storage;
 		storage.robot.getFrontRightMotor().setX(front_right_motor);
 		storage.robot.getBackRightMotor().setX(back_right_motor);
 		
-		counter++;
+//		counter++;
 	}
 
 }
